@@ -251,6 +251,7 @@ body {
 }
 
 .category-section {
+    margin-top: 50vh;
     margin-bottom: 3rem;
     scroll-margin-top: 20vh;
 }
