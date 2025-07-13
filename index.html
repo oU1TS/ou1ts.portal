@@ -3,77 +3,515 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evolving...</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <title>Academic Resources Portal</title>
     <style>
-        /* Basic reset and body styling */
-        body, html {
-            height: 100%;
+        * {
             margin: 0;
             padding: 0;
-            font-family: 'Lora', serif;
-            background-color: #f8f8f8;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            box-sizing: border-box;
         }
 
-        /* Main container for the message */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
         .container {
-            max-width: 600px;
+            display: flex;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-header h2 {
+            color: #64b5f6;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar-header p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: #e0e6ed;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(45deg, #64b5f6, #42a5f5);
+            color: #fff;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #64b5f6;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover::before {
+            transform: scaleY(1);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
             padding: 2rem;
-            line-height: 1.8;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
         }
 
-        /* Styling for the poetic message block */
-        blockquote {
-            border-left: 2px solid #ccc;
-            padding-left: 1.5rem;
-            margin: 2rem 0;
-            font-style: italic;
-            color: #555;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Styling for the final redirecting message */
-        .redirect-message {
+        .menu-toggle {
+            background: linear-gradient(45deg, #64b5f6, #42a5f5);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+        }
+
+        .menu-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #64b5f6, #81c784);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: #e0e6ed;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #64b5f6;
+            box-shadow: 0 0 20px rgba(100, 181, 246, 0.3);
+        }
+
+        .search-box::placeholder {
+            color: #a0a0a0;
+        }
+
+        /* Resource Cards */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
             margin-top: 2rem;
-            font-weight: bold;
-            color: #222;
+        }
+
+        .resource-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #64b5f6, #42a5f5);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .resource-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .resource-card h3 {
+            color: #64b5f6;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .resource-card p {
+            color: #b0b0b0;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .resource-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #64b5f6, #42a5f5);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+        }
+
+        .resource-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4);
+        }
+
+        .category-section {
+            margin-bottom: 3rem;
+        }
+
+        .category-title {
+            color: #81c784;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .category-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(45deg, #81c784, #66bb6a);
+            border-radius: 2px;
+        }
+
+        /* Overlay for mobile */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                top: 0;
+                transform: translateY(-100%);
+                height: auto;
+                max-height: 100vh;
+                overflow-y: auto;
+            }
+
+            .sidebar.active {
+                transform: translateY(0);
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .resources-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .sidebar.active + .main-content {
+                margin-left: 280px;
+            }
         }
     </style>
 </head>
 <body>
-
+    <div class="overlay" id="overlay"></div>
+    
     <div class="container">
-        <!-- Main title message -->
-        <h1>This website has evolved.</h1>
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Navigation</h2>
+                <p>Quick access to resources</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#academic" class="nav-link">Academic Resources</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#research" class="nav-link">Research Tools</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#library" class="nav-link">Digital Library</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#study" class="nav-link">Study Materials</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#platforms" class="nav-link">Related Platforms</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">About Portal</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">Contact Us</a>
+                </li>
+            </ul>
+        </nav>
 
-        <!-- Poetic message block -->
-        <blockquote>
-            <p>This was once the home of oUITS — a vessel for order and knowledge.</p>
-            <p>But like every journey destined to evolve,</p>
-            <p>The name has changed, the soul remains.</p>
-            <p>You are being gently carried to our new haven,</p>
-            <p>Where archives breathe and purpose is reborn.</p>
-        </blockquote>
+        <main class="main-content">
+            <div class="header">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <h1>Academic Resources Portal</h1>
+            </div>
 
-        <!-- Redirecting status message -->
-        <p class="redirect-message">
-            Redirecting now… ✨
-        </p>
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Search for academic resources..." id="searchBox">
+            </div>
+
+            <div class="category-section" id="academic">
+                <h2 class="category-title">Primary Academic Resources</h2>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h3>OUITS Resources</h3>
+                        <p>Comprehensive collection of academic resources and study materials specifically designed for university students. Access textbooks, research papers, and educational tools.</p>
+                        <a href="https://ouits-res.netlify.app/" class="resource-link" target="_blank">Visit Resource →</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>UITS Bot</h3>
+                        <p>Interactive academic assistant and resource finder. Get instant help with course materials, assignment guidance, and academic support through this intelligent platform.</p>
+                        <a href="http://akibreza.github.io/uitsBOT" class="resource-link" target="_blank">Access Bot →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section" id="research">
+                <h2 class="category-title">Research & Study Tools</h2>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h3>Research Database</h3>
+                        <p>Access to academic journals, research papers, and scholarly articles across various disciplines. Perfect for in-depth research and citation needs.</p>
+                        <a href="#" class="resource-link">Coming Soon →</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>Citation Generator</h3>
+                        <p>Automated citation tools supporting APA, MLA, Chicago, and other academic formats. Streamline your bibliography and reference management.</p>
+                        <a href="#" class="resource-link">Coming Soon →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section" id="platforms">
+                <h2 class="category-title">Related Platforms</h2>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h3>Student Community</h3>
+                        <p>Connect with fellow students, share resources, and collaborate on academic projects. Join study groups and discussion forums.</p>
+                        <a href="#" class="resource-link">Join Community →</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>Academic Calendar</h3>
+                        <p>Stay updated with important academic dates, exam schedules, and university events. Never miss a deadline again.</p>
+                        <a href="#" class="resource-link">View Calendar →</a>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
-        // JavaScript to handle the redirect after a delay.
-        // The delay is set to 10000 milliseconds (10 seconds).
-        setTimeout(function() {
-            window.location.href = 'https://b1tacad.netlify.app/';
-        }, 10000);
-    </script>
+        // Menu toggle functionality
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const mainContent = document.querySelector('.main-content');
 
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Search functionality
+        const searchBox = document.getElementById('searchBox');
+        const resourceCards = document.querySelectorAll('.resource-card');
+
+        searchBox.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            resourceCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    card.style.opacity = '1';
+                } else {
+                    card.style.display = 'none';
+                    card.style.opacity = '0';
+                }
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (link.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Close sidebar on mobile after navigation
+                        if (window.innerWidth <= 768) {
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside on desktop
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth > 768) {
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
